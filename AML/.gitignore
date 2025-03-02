@@ -1,4 +1,0 @@
-# Ignore everything inside AML except Lectures
-AML/*
-!AML/Lectures/
-
