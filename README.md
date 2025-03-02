@@ -1,3 +1,3 @@
 # AstroStatistics
-Personal repo for Astrostatistics and Machine Learning course related coding
+Personal repo for Astrostatistics and Machine Learning course related coding \\
 This file will be filled with info on the course topics.
