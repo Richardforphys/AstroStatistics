@@ -8,15 +8,11 @@
 
 ```plaintext
 +---AstroGW
-|   |   LAL_vs_AN.ipynb  →  comparison between GW150914 signal generated with LALSim and computed with Post-Newtonian equations
-|   |   readme.md
+|   |   LAL_vs_AN.ipynb     →  comparison between GW150914 signal generated with LALSim and computed with Post-Newtonian equations
 |   |   RingMassesGW.ipynb  →  let's see what happens to N masses on a ring as a GW passes through them
 |   |
 |   +---GW-signals
-|   |   |   GW150914.txt  →  simulated GW150914 signal with LALSim
+|   |   |   GW150914.txt   →  simulated GW150914 signal with LALSim
 |   |   |   run_params.py  →  parameters used to generate the signal
-|   |   |   run_sim.py  →  script to generate the signal with LALSim
+|   |   |   run_sim.py     →  script to generate the signal with LALSim
 |   |   |   simulated.txt  →  another simulated signal
-|   |   |
-|   |   +---__pycache__
-|   |   |   run_sim.cpython-312.pyc
