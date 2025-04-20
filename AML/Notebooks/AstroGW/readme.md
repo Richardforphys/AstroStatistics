@@ -11,9 +11,12 @@
 |   |   LAL_vs_AN.ipynb     →  comparison between GW150914 signal generated with LALSim and computed with Post-Newtonian equations
 |   |   RingMassesGW.ipynb  →  let's see what happens to N masses on a ring as a GW passes through them
 |   |   RealData.ipynb      →  Use LIGO open data to exercise on filtering and detection of GW signals
+|   |   PSD.ipynb           →  Use LIGO open data and LAL NR template to try to implement match filter technique
 |   |
 |   +---GW-signals
 |   |   |   GW150914.txt   →  simulated GW150914 signal with LALSim
 |   |   |   run_params.py  →  parameters used to generate the signal
 |   |   |   run_sim.py     →  script to generate the signal with LALSim
-|   |   |   simulated.txt  →  another simulated signal
+|   |   |   other data...
+|   +---PNGs
+|   |   |   Usefull .pngs
