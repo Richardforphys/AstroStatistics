@@ -75,3 +75,4 @@ def Normalize(data, template_fft, fs, optimal_time, power_vec, plot):
         #plt.savefig(r'C:\Users\ricca\Documents\Unimib-Code\AstroStatistics\AML\Notebooks\AstroGW\PNGs\Template0.png')
         plt.show()
     return SNR
+
