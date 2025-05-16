@@ -1,20 +1,14 @@
 # Ignora tutto
 *
 
-# Ma non ignorare queste cartelle specifiche:
-!venv/
-!venv/Arguments/
+# Eccezioni: cartelle che vogliamo includere
 !Notebooks/
-!Notebooks/Data/
-
-# Ignora comunque tutto il resto dentro venv e Notebooks, tranne quanto esplicitamente incluso
-venv/*
-!venv/Arguments/
-
 Notebooks/*
 !Notebooks/Data/
+!Notebooks/venv/
+Notebooks/venv/*
+!Notebooks/venv/Arguments/
 
-# Non ignorare questi file se servono
+# Non ignorare questi file specifici nella root
 !.gitignore
-!.gitconfig
 !README.md
