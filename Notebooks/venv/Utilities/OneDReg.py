@@ -98,7 +98,6 @@ class LR:
         self._build_M()
         self._build_C()
 
-        # Non si ricalcola Theta sul test!
         residuals = self.Y_test - self.M @ self.Theta
         chi2 = residuals.T @ np.linalg.inv(self.C) @ residuals
         self.Sigma = np.linalg.inv(self.M.T @ np.linalg.inv(self.C) @ self.M)
