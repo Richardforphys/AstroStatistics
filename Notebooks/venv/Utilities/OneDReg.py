@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.model_selection import ShuffleSplit
 
 class LR:
     """
@@ -54,7 +55,7 @@ class LR:
 
         self.X_train = self._X[train_idx]
         self.Y_train = self._Y[train_idx]
-        self.errors_train = self._errors[train_idx]
+        self.errors_train = self._errors[train_idx]       
 
     def _build_M(self):
         if self.status == 'train':
@@ -88,6 +89,19 @@ class LR:
             ax.legend()
             plt.show()
 
+        return self.Theta, self.Sigma
+    
+    
+    def train2(self):
+        
+        self.status = 'train'
+        self._build_M()
+        self._build_C()
+
+        C_inv = np.linalg.inv(self.C)
+        MT_Cinv = self.M.T @ C_inv
+        self.Theta = np.linalg.inv(MT_Cinv @ self.M) @ (MT_Cinv @ self.Y_train)
+        self.Sigma = np.linalg.inv(MT_Cinv @ self.M)
         return self.Theta, self.Sigma
         
     def test(self, plot=False):
@@ -214,13 +228,3 @@ class LR:
         mean_train_rmse = np.mean(train_rmse_list)
         mean_val_rmse = np.mean(val_rmse_list)
         return mean_train_rmse, mean_val_rmse
-
-
-                
-                
-                
-                
-                
-                
-                
-                
