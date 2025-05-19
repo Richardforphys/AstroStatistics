@@ -208,10 +208,11 @@ class LR:
             C_train = np.diag(errors_train**2)
             C_inv = np.linalg.inv(C_train)
             MT_Cinv = M_train.T @ C_inv
-            #Theta = np.linalg.inv(MT_Cinv @ M_train) @ (MT_Cinv @ Y_train)
-            lambda_reg = 1e-6  # You can tune this value
-            I = np.eye(M_train.shape[1])
-            Theta = np.linalg.inv(MT_Cinv @ M_train + lambda_reg * I) @ (MT_Cinv @ Y_train)
+            #Comment the following line if you want to NOT use regularization
+            Theta = np.linalg.inv(MT_Cinv @ M_train) @ (MT_Cinv @ Y_train)
+            #lambda_reg = 1e-6  # You can tune this value
+            #I = np.eye(M_train.shape[1])
+            #Theta = np.linalg.inv(MT_Cinv @ M_train + lambda_reg * I) @ (MT_Cinv @ Y_train)
 
             # Predict on training and test sets
             Y_train_pred = M_train @ Theta
