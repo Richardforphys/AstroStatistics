@@ -35,7 +35,7 @@ E0 = 1274
 distances = np.array([Uts.distance(b, theta_lim_1, theta_lim_2, d, D) for b in beta])
 print('FE distances simulated')
 probs = Uts.interaction_prob(distances, xs)
-energies = np.where(np.random.uniform(0, 1, size=probs.size) < probs, 511, 0)  # in keV
+energies = np.where(np.random.uniform(0, 1, size=probs.size) < probs, 511, 0)  # Effetto fotoelettrico
 
 N_1274 = N_events
 beta_1274 = np.random.uniform(-np.pi/2, np.pi/2, size=N_1274)
@@ -46,7 +46,7 @@ prob_compton = Uts.interaction_prob_compton(dist_1274, xs_compton)
 print('Computed Compton probs')
 
 # Campiona chi interagisce con Compton
-compton_interactions = np.random.uniform(0, 1, size=N_1274) < prob_compton
+compton_interactions = np.random.uniform(0, 1, size=N_1274) < prob_compton # Compton
 n_comptons = compton_interactions.sum()
 
 # Ora chiama la funzione
