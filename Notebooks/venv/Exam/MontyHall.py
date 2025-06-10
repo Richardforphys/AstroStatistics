@@ -72,7 +72,7 @@ def run_simulation(N, M=2, trials=100):
     plt.axhline(y=tg_win_rate, color='green', linestyle='--', label=f'Third gamer win rate : {np.mean(np.cumsum(tg_wins)/xplot):.2}')
     plt.xlabel('Trial Number')
     plt.ylabel('Number of wins')
-    plt.title(f'Monty Hall Simulation Results: N = {N}, Trials = {trials}')
+    plt.title(f'Monty Hall Simulation Results: N = {N}, Opened Doors= {N-M}, Trials = {trials}')
     plt.legend()
     plt.grid()
     plt.show()    
