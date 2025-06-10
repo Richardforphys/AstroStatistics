@@ -63,7 +63,7 @@ def run_simulation(N, M=2, trials=100):
     print(f'Win rate without switching: {no_switch_win_rate:.2f}')
     print(f'Win rate with switching: {switch_win_rate:.2f}')
     xplot = np.linspace(1,trials+1,trials)
-    plt.figure(figsize=(18, 8))
+    plt.figure(figsize=(14, 6))
     plt.plot(xplot, np.cumsum(fg_wins)/xplot, label='No Switch Wins', linewidth=2, color='blue')
     plt.plot(xplot, np.cumsum(sg_wins)/xplot, label=f'Switch Wins', linewidth=2, color='orange')
     plt.plot(xplot, np.cumsum(tg_wins)/xplot, label='Third Gamer Wins', linewidth=2, color='green')
@@ -83,4 +83,6 @@ M = int(sys.argv[2])  # Number of boxes
 trials = int(sys.argv[3])  # Number of trials
 if trials < N:
     raise ValueError("Number of trials must be greater than or equal to the number of boxes.")
+if M<2:
+    raise ValueError("Number of remaining boxes must be greater than or equal to 2.")
 run_simulation(N, M, trials)  # Run the simulation
