@@ -6,6 +6,7 @@ from sklearn.neighbors import KernelDensity
 from sklearn.mixture import GaussianMixture
 from sklearn.model_selection import KFold
 from sklearn.metrics import mean_squared_error
+from scipy.stats import norm
 
 def read_data(url):
     """
@@ -264,3 +265,4 @@ def kde_sklearn(data, xgrid, bandwidth, kernel="gaussian"):
     kde_skl.fit(data[:, np.newaxis])
     log_pdf = kde_skl.score_samples(xgrid[:, np.newaxis]) # sklearn returns log(density)
     return np.exp(log_pdf)
+    
