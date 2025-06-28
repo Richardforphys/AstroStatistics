@@ -265,4 +265,3 @@ def kde_sklearn(data, xgrid, bandwidth, kernel="gaussian"):
     kde_skl.fit(data[:, np.newaxis])
     log_pdf = kde_skl.score_samples(xgrid[:, np.newaxis]) # sklearn returns log(density)
     return np.exp(log_pdf)
-    
