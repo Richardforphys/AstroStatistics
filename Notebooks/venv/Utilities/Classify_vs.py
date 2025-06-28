@@ -100,8 +100,6 @@ def downsample_by_factor(X, y, f=2.0):
     perm = np.random.permutation(len(y_downsampled))
     return X_downsampled[perm], y_downsampled[perm]
 
-
-
 def compute_completeness_contamination(predictions, y_true):
     """
     Compute completeness (recall) and contamination (false discovery rate).
@@ -241,8 +239,9 @@ def visualize_classification(S, y_ds, clf, completeness, contamination, f=10, a=
     padding_y = 0.05 * np.ptp(S[:, a])
     xlim = (S[:, b].min() - padding_x, S[:, b].max() + padding_x)
     ylim = (S[:, a].min() - padding_y, S[:, a].max() + padding_y)
+    
     xx, yy = np.meshgrid(np.linspace(xlim[0], xlim[1], 200),
-                         np.linspace(ylim[0], ylim[1], 200))
+                            np.linspace(ylim[0], ylim[1], 200))
 
     grid = np.c_[yy.ravel(), xx.ravel()]  # shape (N, 2) with columns: [a, b]
     Z = clf.predict_proba(grid)[:, 1].reshape(xx.shape)
@@ -251,13 +250,13 @@ def visualize_classification(S, y_ds, clf, completeness, contamination, f=10, a=
     fig.subplots_adjust(hspace=0.0, wspace=0.2)
 
     ax = fig.add_subplot(121)
-    ax.scatter(X_sub[:, b], X_sub[:, a], c=y_sub, s=4, lw=0, cmap='gray', zorder=2)
-    ax.imshow(Z, origin='lower', aspect='auto', cmap='gray',
-              extent=xlim + ylim, zorder=1)
+    ax.scatter(X_sub[:, b], X_sub[:, a], c=y_sub, s=4, lw=0, cmap='coolwarm', zorder=2)
+    img = ax.imshow(Z, origin='lower', aspect='auto', cmap='gray',
+                    extent=xlim + ylim, zorder=1)
+    plt.colorbar(img, ax=ax, label='P(Class 1)')
     ax.contour(xx, yy, Z, [0.5], colors='k')
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
-    plt.colorbar(ax.imshow(Z, extent=xlim + ylim, cmap='gray'), ax=ax, label='P(Class 1)')
 
     ax = plt.subplot(222)
     ax.plot(Ncolors, completeness, 'o-k')
