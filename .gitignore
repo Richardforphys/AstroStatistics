@@ -1,6 +1,3 @@
 # Ignora tutte le sottocartelle di Notebooks/venv tranne Arguments
-Notebooks/venv/Include/
-Notebooks/venv/Lib/
-Notebooks/venv/Scripts/
-Notebooks/venv/share/
-Notebooks/venv/Exam/LIGO/LIGO_Utils/Npy
+AML/venv
+AML
