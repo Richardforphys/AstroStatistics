@@ -1,7 +1,3 @@
 # Ignora tutte le sottocartelle di Notebooks/venv tranne Arguments
-#Notebooks/Arguments/ML
-Notebooks/Arguments/FREQ_vs_BAYS
-#Notebooks/Arguments/Classification
 Notebooks/Data
 Notebooks/venv
-#Notebooks/Exam/LIGO
