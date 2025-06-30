@@ -13,7 +13,7 @@ np.save('data_100k', data)
 np.save('labels_100k', y)
 np.save('keys_100k', keys)
 
-y, data = downsample_balanced(data, y, 50000, 42)
+y, data = downsample_balanced(data, y, 20000, 42)
 print('Saving DS data...')
 np.save('y_ds_100k.npy', y)
 np.save('data_ds_100k.npy', data)

@@ -438,7 +438,7 @@ def visualize_classification_generic(S, y_ds, clf, completeness, contamination, 
 
     plt.show()
 
-def visualize_classification_generic_all(S, y_ds, clf, completeness, contamination, f=10, a=0, b=1):
+def visualize_classification_generic_all(S, y_ds, clf, completeness, contamination, f=10, a=0, b=1, cc=False):
     """
     Visualize decision boundary, completeness, and contamination.
 
@@ -489,17 +489,19 @@ def visualize_classification_generic_all(S, y_ds, clf, completeness, contaminati
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
     ax.set_title('Decision Boundary (P(Class 1))')
+    
+    if cc:
 
-    ax = plt.subplot(222)
-    ax.plot(Ncolors, completeness, 'o-k')
-    ax.set_ylabel('Completeness')
-    ax.grid(True)
+        ax = plt.subplot(222)
+        ax.plot(Ncolors, completeness, 'o-k')
+        ax.set_ylabel('Completeness')
+        ax.grid(True)
 
-    ax = plt.subplot(224)
-    ax.plot(Ncolors, contamination, 'o-k')
-    ax.set_xlabel('N Features')
-    ax.set_ylabel('Contamination')
-    ax.grid(True)
+        ax = plt.subplot(224)
+        ax.plot(Ncolors, contamination, 'o-k')
+        ax.set_xlabel('N Features')
+        ax.set_ylabel('Contamination')
+        ax.grid(True)
 
     plt.show()
     
