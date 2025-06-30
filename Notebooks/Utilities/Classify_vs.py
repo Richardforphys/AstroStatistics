@@ -133,8 +133,13 @@ def evaluate_classifier_over_features(X_train, X_test, y_train, y_test, clf):
         clf_i.fit(X_train[:, :nc], y_train)
         
         y_pred = clf_i.predict(X_test[:, :nc])
-        prob = clf_i.predict_proba(X_test[:, :nc])[:, 1]
-
+        
+        try:
+            prob = clf_i.predict_proba(X_test[:, :nc])[:, 1]
+        except AttributeError:
+            prob = clf_i.decision_function(X_test[:, :nc])
+            prob = (prob - prob.min()) / (prob.max() - prob.min())  # normalizzazione
+            
         predictions.append(y_pred)
         y_prob.append(prob)
         classifiers.append(clf_i)
@@ -361,9 +366,8 @@ def visualize_classification(S, y_ds, clf, completeness, contamination, f=10, a=
     ax.grid(True)
 
     plt.show()
-    
 
-def visualize_classification_generic(S, y_ds, clf, completeness, contamination, f=10, a=0, b=1):
+def visualize_classification_generic(S, y_ds, clf, completeness, contamination, limits, f=10, a=0, b=1):
     """
     Visualize decision boundary on features a and b, completeness, and contamination.
 
@@ -386,8 +390,13 @@ def visualize_classification_generic(S, y_ds, clf, completeness, contamination, 
     # Define plot limits with padding
     padding_x = 0.05 * np.ptp(S[:, b])
     padding_y = 0.05 * np.ptp(S[:, a])
-    xlim = (S[:, b].min() - padding_x, S[:, b].max() + padding_x)
-    ylim = (S[:, a].min() - padding_y, S[:, a].max() + padding_y)
+    
+    if limits:
+        xlim = (limits[0], limits[1])
+        ylim = (limits[2], limits[3])
+    else:   
+        xlim = (S[:, b].min() - padding_x, S[:, b].max() + padding_x)
+        ylim = (S[:, a].min() - padding_y, S[:, a].max() + padding_y)
 
     xx, yy = np.meshgrid(np.linspace(xlim[0], xlim[1], 200),
                          np.linspace(ylim[0], ylim[1], 200))
@@ -531,4 +540,140 @@ def plot_learning_curve(train_sizes, train_scores, test_scores):
 
     plt.legend(loc="best")
     plt.tight_layout()
+    plt.show()
+    
+#==================================== Decision Tree ======================================================#
+
+
+def evaluate_DT(X, X_train, X_test, y_train, y_test, clf_i, depths):
+    Ncolors = np.arange(1, X.shape[1] + 1)
+
+    classifiers = []
+    predictions = []
+    completeness_all = []
+    contamination_all = []
+
+    for depth in depths:
+        clf_depth = []
+        pred_depth = []
+
+        for nc in Ncolors:
+            clf = clone(clf_i)
+            clf.set_params(max_depth=depth)
+            clf.fit(X_train[:, :nc], y_train)
+            y_pred = clf.predict(X_test[:, :nc])
+
+            clf_depth.append(clf)
+            pred_depth.append(y_pred)
+
+        classifiers.append(clf_depth)
+        predictions.append(pred_depth)
+
+        comp, cont = compute_completeness_contamination(pred_depth, y_test)
+        completeness_all.append(comp)
+        contamination_all.append(cont)
+
+    print("completeness", completeness_all)
+    print("contamination", contamination_all)
+
+    return {
+        'completeness': np.array(completeness_all),  # shape: (len(depths), len(Ncolors))
+        'contamination': np.array(contamination_all),
+        'classifiers': classifiers,
+        'predictions': predictions
+    }
+
+
+from matplotlib.ticker import MultipleLocator, FormatStrFormatter, NullFormatter
+
+def visualize_DT(X, y, classifiers, completeness, contamination,
+                    depths, Ncolors, feature_names=None,
+                    a=0, b=1, N_plot=5000, xlim=None, ylim=None, cc=False):
+    """
+    Visualizza la decision boundary e le curve di completezza e contaminazione.
+
+    Parametri:
+    - X, y: array dei dati (usati per il plot scatter)
+    - classifiers: lista di liste di classificatori, uno per ciascun valore di `depth`
+    - completeness, contamination: array shape (n_depths, n_features)
+    - depths: lista di profondità degli alberi
+    - Ncolors: array del numero di feature usate
+    - feature_names: opzionale, nomi delle feature per le etichette degli assi
+    - a, b: indici delle feature da plottare (y e x)
+    - N_plot: numero di punti da plottare nel grafico scatter
+    - xlim, ylim: limiti degli assi per il plot (tuple)
+    """
+
+    if feature_names is None:
+        feature_names = [f'feature {i}' for i in range(X.shape[1])]
+
+    # Decision boundary con il classificatore più profondo e le prime due feature
+    clf = classifiers[-1][1]  # Ultimo depth, prime 2 feature
+
+    if xlim is None:
+        xlim = (X[:, b].min() - 0.05, X[:, b].max() + 0.05)
+    if ylim is None:
+        ylim = (X[:, a].min() - 0.05, X[:, a].max() + 0.05)
+
+    xx, yy = np.meshgrid(np.linspace(xlim[0], xlim[1], 101),
+                         np.linspace(ylim[0], ylim[1], 101))
+
+    grid = np.c_[yy.ravel(), xx.ravel()]
+    Z = clf.predict(grid)
+    Z = Z.reshape(xx.shape)
+
+    # Plot
+    fig = plt.figure(figsize=(10, 4))
+    fig.subplots_adjust(bottom=0.15, top=0.95, hspace=0.0,
+                        left=0.1, right=0.95, wspace=0.2)
+
+    # Left: decision boundary + scatter
+    ax = fig.add_subplot(121)
+    im = ax.scatter(X[-N_plot:, b], X[-N_plot:, a], c=y[-N_plot:],
+                    s=4, lw=0, cmap=plt.cm.Oranges, zorder=2)
+    im.set_clim(-0.5, 1)
+
+    ax.contour(xx, yy, Z, [0.5], colors='k', alpha=0.5)
+
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+
+    ax.set_xlabel(f'${feature_names[b]}$')
+    ax.set_ylabel(f'${feature_names[a]}$')
+
+    ax.text(0.02, 0.02, f"depth = {depths[-1]}",
+            transform=ax.transAxes)
+    
+    if cc:
+
+        # Top-right: completeness
+        ax = fig.add_subplot(222)
+        for i, d in enumerate(depths):
+            ax.plot(Ncolors, completeness[i], 'o--', ms=6, label=f"depth={d}")
+        ax.xaxis.set_major_locator(MultipleLocator(1))
+        ax.yaxis.set_major_locator(MultipleLocator(0.2))
+        ax.xaxis.set_major_formatter(NullFormatter())
+
+        ax.set_ylabel('completeness')
+        ax.set_xlim(0.5, Ncolors[-1] + 0.5)
+        ax.set_ylim(-0.1, 1.1)
+        ax.grid(True)
+
+        # Bottom-right: contamination
+        ax = fig.add_subplot(224)
+        for i, d in enumerate(depths):
+            ax.plot(Ncolors, contamination[i], 'o--', ms=6, label=f"depth={d}")
+        ax.legend(loc='lower right',
+                bbox_to_anchor=(1.0, 0.79))
+
+        ax.xaxis.set_major_locator(MultipleLocator(1))
+        ax.yaxis.set_major_locator(MultipleLocator(0.2))
+        ax.xaxis.set_major_formatter(FormatStrFormatter('%i'))
+
+        ax.set_xlabel('N colors')
+        ax.set_ylabel('contamination')
+        ax.set_xlim(0.5, Ncolors[-1] + 0.5)
+        ax.set_ylim(-0.1, 1.1)
+        ax.grid(True)
+
     plt.show()

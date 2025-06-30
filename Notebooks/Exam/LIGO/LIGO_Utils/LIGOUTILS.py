@@ -39,6 +39,33 @@ def downsample(data, y, ratio=1.0):
 
     return y[idx_final], data[idx_final]
 
+def downsample_unbalanced(X, y, n_samples=20000, random_state=None):
+    """
+    Randomly downsamples the dataset to n_samples, preserving the original class imbalance.
+
+    Parameters:
+        X (np.ndarray): Feature array of shape (n_samples_original, n_features).
+        y (np.ndarray): Label array of shape (n_samples_original,).
+        n_samples (int): Total number of samples to keep after downsampling.
+        random_state (int or None): Random seed for reproducibility.
+
+    Returns:
+        y_down (np.ndarray): Downsampled labels.
+        X_down (np.ndarray): Downsampled features.
+    """
+    assert len(X) == len(y), "X and y must have the same length."
+    assert n_samples <= len(y), "n_samples must be less than or equal to original dataset size."
+
+    print('Downsampling (unbalanced)...')
+    
+    rng = np.random.default_rng(random_state)
+    
+    # Randomly sample indices
+    idx_sampled = rng.choice(len(y), size=n_samples, replace=False)
+    
+    return y[idx_sampled], X[idx_sampled]
+
+
 def downsample_balanced(X, y, n_samples=20000, random_state=None):
     """
     Downsamples the dataset to n_samples while keeping the classes balanced.
