@@ -1,3 +1,4 @@
 # Ignora tutte le sottocartelle di Notebooks/venv tranne Arguments
 Notebooks/Data
 Notebooks/venv
+Notebooks/Exam/Ligo/Npy

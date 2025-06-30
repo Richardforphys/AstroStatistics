@@ -146,7 +146,7 @@ def evaluate_classifier_over_features(X_train, X_test, y_train, y_test, clf):
         if nc%2==0:
             plt.plot(fpr, tpr, label=f'{nc} feat. (AUC = {roc_auc:.2f})')
 
-    plt.plot([0, 1], [0, 1], 'k--')  # diagonal line once
+    plt.plot([0, 1], [0, 1], 'k--')  
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.title('ROC Curve by Number of Features')
@@ -501,4 +501,32 @@ def visualize_classification_generic_all(S, y_ds, clf, completeness, contaminati
     ax.set_ylabel('Contamination')
     ax.grid(True)
 
+    plt.show()
+    
+def plot_learning_curve(train_sizes, train_scores, test_scores):
+
+    # Media e deviazione standard dei punteggi
+    train_scores_mean = np.mean(train_scores, axis=1)
+    train_scores_std = np.std(train_scores, axis=1)
+
+    test_scores_mean = np.mean(test_scores, axis=1)
+    test_scores_std = np.std(test_scores, axis=1)
+
+    # 🔧 Plot
+    plt.figure(figsize=(8, 6))
+    plt.title("Learning Curve")
+    plt.xlabel("Training Set Size")
+    plt.ylabel("Accuracy")
+    plt.grid(True)
+
+    plt.fill_between(train_sizes, train_scores_mean - train_scores_std,
+                    train_scores_mean + train_scores_std, alpha=0.2, color="blue")
+    plt.fill_between(train_sizes, test_scores_mean - test_scores_std,
+                    test_scores_mean + test_scores_std, alpha=0.2, color="orange")
+
+    plt.plot(train_sizes, train_scores_mean, 'o-', color="blue", label="Training score")
+    plt.plot(train_sizes, test_scores_mean, 'o-', color="orange", label="Cross-validation score")
+
+    plt.legend(loc="best")
+    plt.tight_layout()
     plt.show()

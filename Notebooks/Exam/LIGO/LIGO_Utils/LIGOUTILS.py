@@ -2,7 +2,6 @@ import h5py
 import numpy as np
 from sklearn.model_selection import StratifiedShuffleSplit
 
-
 def load_data(data_path):
     print('loading data')
     with h5py.File(data_path, 'r') as f:
