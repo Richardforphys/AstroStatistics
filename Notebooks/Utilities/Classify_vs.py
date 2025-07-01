@@ -4,6 +4,7 @@ from sklearn.base import clone
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score, roc_curve, auc
 import matplotlib as mtl
+from sklearn import exceptions
 
 def batch_downsample(X, y, batch_size, f=2.0):
     """
@@ -257,7 +258,10 @@ def cross_validate_gmm_components(X, y, classifier_class, n_components_list, n_s
         acc = []
         for train_idx, test_idx in kf.split(X):
             clf = classifier_class(n_components=n, tol=1e-5, covariance_type='full')
-            clf.fit(X[train_idx], y[train_idx])
+            try:
+                clf.fit(X[train_idx], y[train_idx])
+            except exceptions.ConvergenceWarning:
+                pass
             y_pred = clf.predict(X[test_idx])
             acc.append(accuracy_score(y[test_idx], y_pred))
         scores.append(np.mean(acc))
@@ -403,7 +407,7 @@ def visualize_classification_generic(S, y_ds, clf, completeness, contamination, 
 
     # Prepare grid data for prediction
     n_grid_points = xx.size
-    n_features = clf.n_features_in_
+    n_features = S.shape[1]
 
     # Use mean values for all features as baseline
     baseline = np.mean(S, axis=0)
@@ -552,6 +556,8 @@ def evaluate_DT(X, X_train, X_test, y_train, y_test, clf_i, depths):
     predictions = []
     completeness_all = []
     contamination_all = []
+    aucs = []
+    y_prob = []
 
     for depth in depths:
         clf_depth = []
@@ -565,22 +571,37 @@ def evaluate_DT(X, X_train, X_test, y_train, y_test, clf_i, depths):
 
             clf_depth.append(clf)
             pred_depth.append(y_pred)
-
-        classifiers.append(clf_depth)
+            proba = clf.predict_proba(X_test[:, :nc])[:, 1]
+        
+        y_prob.append(proba)
         predictions.append(pred_depth)
-
+        classifiers.append(clf_depth)
+        
         comp, cont = compute_completeness_contamination(pred_depth, y_test)
         completeness_all.append(comp)
         contamination_all.append(cont)
+        
+        fpr, tpr, _ = roc_curve(y_test, proba)
+        roc_auc = auc(fpr, tpr)
+        plt.plot(fpr, tpr, label=f'ROC with {nc} features (AUC = {roc_auc:.2f})')
+        
+    completeness, contamination = compute_completeness_contamination(predictions, y_test)
 
-    print("completeness", completeness_all)
-    print("contamination", contamination_all)
+    print("completeness", completeness)
+    print("contamination", contamination)
 
-    return {
-        'completeness': np.array(completeness_all),  # shape: (len(depths), len(Ncolors))
-        'contamination': np.array(contamination_all),
+    # Find best classifier (max completeness - contamination or max AUC?)
+    # Here, simplest: max completeness - contamination
+    scores = np.array(completeness) - np.array(contamination)
+    best_idx = np.argmax(scores)
+    
+    result = {
+        'completeness': completeness,
+        'contamination': contamination,
         'classifiers': classifiers,
-        'predictions': predictions
+        'predictions': predictions,
+        'proba': y_prob,
+        'best_classifier': classifiers[best_idx]
     }
 
 
