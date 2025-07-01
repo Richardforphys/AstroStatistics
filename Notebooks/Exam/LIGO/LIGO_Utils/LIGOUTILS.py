@@ -6,7 +6,7 @@ def load_data(data_path):
     print('loading data')
     with h5py.File(data_path, 'r') as f:
         y = f['det'][()]
-        keys = [key for key in f.keys() if key != 'det']
+        keys = [key for key in f.keys() if key != 'det' and key != 'snr']
         arrays = [f[key][()].reshape(len(f[key]), -1) for key in keys]
         data = np.concatenate(arrays, axis=1)
     nan_mask = ~np.isnan(data).any(axis=1)
