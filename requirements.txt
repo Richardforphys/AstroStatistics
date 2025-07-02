@@ -1,0 +1,37 @@
+# Core scientific stack
+numpy
+scipy
+pandas
+matplotlib
+seaborn
+
+# Machine learning
+scikit-learn
+tensorflow
+keras
+
+# Statistical modeling & Bayesian inference
+statsmodels
+pymc
+emcee
+
+# Data manipulation & utilities
+jupyterlab
+notebook
+ipython
+tqdm
+
+# File handling
+h5py
+astropy
+requests
+
+# Astronomy & astro statistics
+astroML
+
+# Dimensionality reduction and clustering
+umap-learn
+phik
+
+# Deep learning utilities
+torch
