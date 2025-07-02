@@ -1,5 +1,6 @@
 import h5py
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.model_selection import StratifiedShuffleSplit
 
 def load_data(data_path):
@@ -107,3 +108,35 @@ def downsample_balanced(X, y, n_samples=20000, random_state=None):
 
     return y[idx_total], X[idx_total]
 
+def plot_training_history(history):
+    acc = history.history.get('accuracy')
+    val_acc = history.history.get('val_accuracy')
+    loss = history.history.get('loss')
+    val_loss = history.history.get('val_loss')
+
+    epochs = range(1, len(acc) + 1)
+
+    plt.figure(figsize=(14, 6))
+
+    # Plot Loss
+    plt.subplot(1, 2, 1)
+    plt.plot(epochs, loss, 'b-', label='Training Loss', linewidth=2)
+    plt.plot(epochs, val_loss, 'r--', label='Validation Loss', linewidth=2)
+    plt.title('Training and Validation Loss', fontsize=16)
+    plt.xlabel('Epochs', fontsize=14)
+    plt.ylabel('Loss', fontsize=14)
+    plt.legend(fontsize=12)
+    plt.grid(True)
+
+    # Plot Accuracy
+    plt.subplot(1, 2, 2)
+    plt.plot(epochs, acc, 'b-', label='Training Accuracy', linewidth=2)
+    plt.plot(epochs, val_acc, 'r--', label='Validation Accuracy', linewidth=2)
+    plt.title('Training and Validation Accuracy', fontsize=16)
+    plt.xlabel('Epochs', fontsize=14)
+    plt.ylabel('Accuracy', fontsize=14)
+    plt.legend(fontsize=12)
+    plt.grid(True)
+
+    plt.tight_layout()
+    plt.show()
